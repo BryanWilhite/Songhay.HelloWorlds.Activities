@@ -1,7 +1,7 @@
-﻿using Songhay.HelloWorlds.Activities.Models;
+﻿using Songhay.HelloWorlds.Activities.Extensions;
+using Songhay.HelloWorlds.Activities.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Songhay.HelloWorlds.Activities
 {
@@ -24,10 +24,7 @@ namespace Songhay.HelloWorlds.Activities
 
         public IActivity GetActivity(string activityName)
         {
-            if (string.IsNullOrEmpty(activityName)) throw new ArgumentNullException("The expected Activity name is not here.");
-            if (!this._activities.Keys.Contains(activityName)) throw new ArgumentNullException($"The expected Activity name, {activityName}, is not here.");
-
-            return this._activities[activityName].Value;
+            return this._activities.GetActivity(activityName);
         }
 
         Dictionary<string, Lazy<IActivity>> _activities;
