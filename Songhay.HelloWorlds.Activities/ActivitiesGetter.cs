@@ -16,7 +16,7 @@ namespace Songhay.HelloWorlds.Activities
                     new Lazy<IActivity>(() => new Activities.GetHelloWorldActivity())
                 },
                 {
-                    nameof(Activities.GetHelloWorldActivity),
+                    nameof(Activities.GetHelloWorldReportActivity),
                     new Lazy<IActivity>(() => new Activities.GetHelloWorldReportActivity())
                 }
             };

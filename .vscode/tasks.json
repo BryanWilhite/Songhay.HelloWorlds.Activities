@@ -1,0 +1,70 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "command": "dotnet",
+            "taskName": "dotnet build",
+            "isBackground": true,
+            "type": "shell",
+            "args": [
+                "build",
+                "Songhay.HelloWorlds.Activities.sln"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "command": "dotnet",
+            "taskName": "dotnet build [Release]",
+            "isBackground": true,
+            "type": "shell",
+            "args": [
+                "build",
+                "Songhay.HelloWorlds.Activities.sln",
+                "--configuration",
+                "Release"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}/"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "command": "dotnet",
+            "taskName": "dotnet run GetHelloWorldActivity [Release]",
+            "isBackground": true,
+            "type": "shell",
+            "args": [
+                "run",
+                "--configuration",
+                "Release",
+                "--",
+                "GetHelloWorldActivity",
+                "Saturn"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}/Songhay.HelloWorlds.Shell"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "command": "dotnet",
+            "taskName": "dotnet run GetHelloWorldReportActivity [Release]",
+            "isBackground": true,
+            "type": "shell",
+            "args": [
+                "run",
+                "--configuration",
+                "Release",
+                "--",
+                "GetHelloWorldReportActivity"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}/Songhay.HelloWorlds.Shell"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
