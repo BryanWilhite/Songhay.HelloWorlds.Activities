@@ -1,4 +1,4 @@
-﻿namespace Songhay.HelloWorlds.Client.Models
+﻿namespace Songhay.HelloWorlds.Activities.Models
 {
     /// <summary>
     /// Defines an Activity in a shell environment.

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Songhay.HelloWorlds.Activities.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Songhay.HelloWorlds.Client.Models
+namespace Songhay.HelloWorlds.Activities
 {
     public class ActivitiesGetter
     {

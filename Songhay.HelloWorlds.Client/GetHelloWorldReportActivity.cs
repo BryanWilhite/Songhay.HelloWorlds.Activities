@@ -1,7 +1,7 @@
-﻿using Songhay.HelloWorlds.Client.Models;
+﻿using Songhay.HelloWorlds.Activities.Models;
 using System;
 
-namespace Songhay.HelloWorlds.Client.Activities
+namespace Songhay.HelloWorlds.Activities
 {
     public class GetHelloWorldReportActivity : IActivity
     {
