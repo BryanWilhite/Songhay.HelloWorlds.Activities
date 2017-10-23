@@ -7,7 +7,24 @@ namespace Songhay.HelloWorlds.Activities
 {
     public class ActivitiesGetter
     {
+        static ActivitiesGetter()
+        {
+            TraceSourceName = "rx-trace";
+        }
+
         public ActivitiesGetter()
+        {
+            this.SetupActivities();
+        }
+
+        public static string TraceSourceName { get; private set; }
+
+        public IActivity GetActivity(string activityName)
+        {
+            return this._activities.GetActivity(activityName);
+        }
+
+        void SetupActivities()
         {
             this._activities = new Dictionary<string, Lazy<IActivity>>
             {
@@ -20,11 +37,6 @@ namespace Songhay.HelloWorlds.Activities
                     new Lazy<IActivity>(() => new Activities.GetHelloWorldReportActivity())
                 }
             };
-        }
-
-        public IActivity GetActivity(string activityName)
-        {
-            return this._activities.GetActivity(activityName);
         }
 
         Dictionary<string, Lazy<IActivity>> _activities;

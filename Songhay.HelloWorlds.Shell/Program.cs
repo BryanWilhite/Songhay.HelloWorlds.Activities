@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Songhay.Diagnostics;
+using Songhay.Extensions;
 using Songhay.HelloWorlds.Activities;
 using Songhay.HelloWorlds.Activities.Extensions;
 using System;
@@ -9,26 +9,27 @@ namespace Songhay.HelloWorlds.Shell
 {
     class Program
     {
+        static Program()
+        {
+            traceSource = TraceSources
+                .Instance[ActivitiesGetter.TraceSourceName]
+                .WithAllSourceLevels();
+        }
+
         static void Main(string[] args)
         {
-            var services = new ServiceCollection().AddLogging(builder =>
+            using (var listener = new TextWriterTraceListener(Console.Out))
             {
-                builder
-                    .AddTraceSource(new SourceSwitch("rx-switch")
-                    {
-                        Level = SourceLevels.All
-                    });
-            });
+                traceSource.Listeners.Add(listener);
 
-            var serviceProvider = services.BuildServiceProvider();
-            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("logger loaded");
+                var activityName = args.ToActivityName();
+                var activity = (new ActivitiesGetter()).GetActivity(activityName);
+                activity.Start(args.ToActivityArgs());
 
-            var activityName = args.ToActivityName();
-            var activity = (new ActivitiesGetter()).GetActivity(activityName);
-            activity.Start(args.ToActivityArgs());
-
-            Console.ReadKey();
+                listener.Flush();
+            }
         }
+
+        static readonly TraceSource traceSource;
     }
 }

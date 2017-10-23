@@ -1,4 +1,6 @@
-﻿using Songhay.HelloWorlds.Activities.Models;
+﻿using Songhay.Diagnostics;
+using Songhay.Extensions;
+using Songhay.HelloWorlds.Activities.Models;
 using System;
 using System.Diagnostics;
 
@@ -8,7 +10,9 @@ namespace Songhay.HelloWorlds.Activities
     {
         static GetHelloWorldActivity()
         {
-            traceSource = new TraceSource("rx", SourceLevels.All);
+            traceSource = TraceSources
+                .Instance[ActivitiesGetter.TraceSourceName]
+                .WithAllSourceLevels();
         }
 
         public void Start(string[] args)

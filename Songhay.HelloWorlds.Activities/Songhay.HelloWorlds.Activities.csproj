@@ -9,4 +9,8 @@
     <Description>A simple demonstration of the Songhay System Shell Activities architecture</Description>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SonghayCore" Version="2.0.0" />
+  </ItemGroup>
+
 </Project>
