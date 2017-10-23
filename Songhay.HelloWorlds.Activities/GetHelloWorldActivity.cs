@@ -1,6 +1,6 @@
 ﻿using Songhay.Diagnostics;
 using Songhay.Extensions;
-using Songhay.HelloWorlds.Activities.Models;
+using Songhay.Models;
 using System;
 using System.Diagnostics;
 
