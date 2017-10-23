@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Songhay.HelloWorlds.Activities;
 using Songhay.HelloWorlds.Activities.Extensions;
 using System;
+using System.Diagnostics;
 
 namespace Songhay.HelloWorlds.Shell
 {
@@ -13,7 +14,10 @@ namespace Songhay.HelloWorlds.Shell
             var services = new ServiceCollection().AddLogging(builder =>
             {
                 builder
-                    .AddConsole();
+                    .AddTraceSource(new SourceSwitch("rx-switch")
+                    {
+                        Level = SourceLevels.All
+                    });
             });
 
             var serviceProvider = services.BuildServiceProvider();
