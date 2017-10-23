@@ -4,9 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Bryan D. Wilhite</Authors>
     <Company>Songhay System</Company>
+    <Description>This is a simple demonstration of the Songhay System Shell Activities architecture.</Description>
     <Copyright>(c) 2017 Bryan D. Wilhite</Copyright>
     <RepositoryUrl>https://github.com/BryanWilhite/Songhay.HelloWorlds.Activities</RepositoryUrl>
-    <Description>A simple demonstration of the Songhay System Shell Activities architecture</Description>
+    <AssemblyVersion>1.0.0.*</AssemblyVersion>
+    <Deterministic>False</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1705;CS7035</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
