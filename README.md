@@ -4,7 +4,7 @@ This is a simple demonstration of the Songhay System Shell Activities architectu
 
 This new approach depends on these key definitions:
 
-The `IActivity` [interface](https://github.com/BryanWilhite/Songhay.HelloWorlds.Activities/blob/master/Songhay.HelloWorlds.Activities/Models/IActivity.cs). This interface defines the _Activity_. Its associated [extension methods](https://github.com/BryanWilhite/Songhay.HelloWorlds.Activities/blob/master/Songhay.HelloWorlds.Activities/Extensions/IActivityExtensions.cs) intend to make the console `Program` [class](./Songhay.HelloWorlds.Shell/Program.cs) as simple as possible:
+The `IActivity` [interface](https://github.com/BryanWilhite/SonghayCore/blob/master/SonghayCore/Models/IActivity.cs). This interface defines the _Activity_. Its associated [extension methods](https://github.com/BryanWilhite/SonghayCore/blob/master/SonghayCore/Extensions/IActivityExtensions.cs) intend to make the console `Program` [class](./Songhay.HelloWorlds.Shell/Program.cs) as simple as possible:
 
 ```c#
 static void Main(string[] args)
