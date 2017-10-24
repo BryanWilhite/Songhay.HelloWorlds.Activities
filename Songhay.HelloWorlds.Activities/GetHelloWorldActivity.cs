@@ -8,12 +8,8 @@ namespace Songhay.HelloWorlds.Activities
 {
     public class GetHelloWorldActivity : IActivity
     {
-        static GetHelloWorldActivity()
-        {
-            traceSource = TraceSources
-                .Instance[ActivitiesGetter.TraceSourceName]
-                .WithAllSourceLevels();
-        }
+        static GetHelloWorldActivity() => traceSource = TraceSources.Instance[ActivitiesGetter.TraceSourceName].WithAllSourceLevels();
+        static readonly TraceSource traceSource;
 
         public void Start(string[] args)
         {
@@ -22,7 +18,5 @@ namespace Songhay.HelloWorlds.Activities
             var worldName = args[0];
             traceSource.TraceInformation($"Hello from world {worldName}!");
         }
-
-        static readonly TraceSource traceSource;
     }
 }

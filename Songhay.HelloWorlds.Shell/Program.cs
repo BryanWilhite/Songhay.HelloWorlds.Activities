@@ -9,12 +9,8 @@ namespace Songhay.HelloWorlds.Shell
 {
     class Program
     {
-        static Program()
-        {
-            traceSource = TraceSources
-                .Instance[ActivitiesGetter.TraceSourceName]
-                .WithAllSourceLevels();
-        }
+        static Program() => traceSource = TraceSources.Instance[ActivitiesGetter.TraceSourceName].WithAllSourceLevels();
+        static readonly TraceSource traceSource;
 
         static void Main(string[] args)
         {
@@ -38,7 +34,5 @@ namespace Songhay.HelloWorlds.Shell
 
             Environment.Exit(0);
         }
-
-        static readonly TraceSource traceSource;
     }
 }
