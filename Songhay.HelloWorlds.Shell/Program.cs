@@ -9,7 +9,7 @@ namespace Songhay.HelloWorlds.Shell
 {
     class Program
     {
-        static Program() => traceSource = TraceSources.Instance[ActivitiesGetter.TraceSourceName].WithAllSourceLevels();
+        static Program() => traceSource = TraceSources.Instance.GetConfiguredTraceSource().WithAllSourceLevels();
         static readonly TraceSource traceSource;
 
         static void Main(string[] args)
@@ -20,9 +20,13 @@ namespace Songhay.HelloWorlds.Shell
             {
                 traceSource.Listeners.Add(listener);
 
-                var activityName = args.ToActivityName();
-                var activity = (new ActivitiesGetter()).GetActivity(activityName);
-                activity.Start(args.ToActivityArgs());
+                var getter = new MyActivitiesGetter(args);
+                var activity = getter.GetActivity();
+
+                if (getter.Args.IsHelpRequest())
+                    Console.WriteLine(activity.DisplayHelp(getter.Args));
+
+                activity.Start(getter.Args);
 
                 listener.Flush();
             }

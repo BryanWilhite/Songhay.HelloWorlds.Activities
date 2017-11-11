@@ -1,22 +1,44 @@
 ﻿using Songhay.Diagnostics;
 using Songhay.Extensions;
 using Songhay.Models;
-using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Songhay.HelloWorlds.Activities
 {
     public class GetHelloWorldActivity : IActivity
     {
-        static GetHelloWorldActivity() => traceSource = TraceSources.Instance[ActivitiesGetter.TraceSourceName].WithAllSourceLevels();
+        static GetHelloWorldActivity() => traceSource = TraceSources.Instance.GetConfiguredTraceSource().WithAllSourceLevels();
         static readonly TraceSource traceSource;
 
-        public void Start(string[] args)
+        public string DisplayHelp(ProgramArgs args)
         {
-            if (args.Length < 1) throw new ArgumentException("The expected world name is not here.");
+            if (!args.HelpSet.Any()) this.SetupHelp(args);
 
-            var worldName = args[0];
-            traceSource.TraceInformation($"Hello from world {worldName}!");
+            return string.Concat(
+                FrameworkAssemblyUtility.GetAssemblyInfo(this.GetType().Assembly),
+                args.ToHelpDisplayText()
+            );
         }
+
+        public void Start(ProgramArgs args)
+        {
+            if (args.IsHelpRequest()) return;
+
+            var worldName = args.GetArgValue(argWorldName);
+            traceSource.EnsureTraceSource().TraceInformation($"Hello from world {worldName}!");
+        }
+
+        void SetupHelp(ProgramArgs args)
+        {
+            var indentation = string.Join(string.Empty, Enumerable.Repeat(" ", 4).ToArray());
+            args.HelpSet.Add(argWorldName, $"{argWorldName} <world name>{indentation}Returns a greeting for the specified world.");
+            args.HelpSet.Add(argMoonList, $"{argMoonList} \"<list of moons>\"{indentation}A comma-separated list of moons.");
+            args.HelpSet.Add(argMoonsRequired, $"{argMoonsRequired}{indentation}Indicates that moons are required for the world.");
+        }
+
+        const string argMoonList = "--moon-list";
+        const string argMoonsRequired = "--moons-required";
+        const string argWorldName = "--world-name";
     }
 }

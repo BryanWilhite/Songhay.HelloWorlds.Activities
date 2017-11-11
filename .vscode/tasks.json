@@ -3,7 +3,7 @@
     "tasks": [
         {
             "command": "dotnet",
-            "taskName": "dotnet build",
+            "label": "dotnet build",
             "isBackground": true,
             "type": "shell",
             "args": [
@@ -17,7 +17,7 @@
         },
         {
             "command": "dotnet",
-            "taskName": "dotnet build [Release]",
+            "label": "dotnet build [Release]",
             "isBackground": true,
             "type": "shell",
             "args": [
@@ -33,7 +33,7 @@
         },
         {
             "command": "dotnet",
-            "taskName": "dotnet run GetHelloWorldActivity [Release]",
+            "label": "dotnet run GetHelloWorldActivity [Release]",
             "isBackground": true,
             "type": "shell",
             "args": [
@@ -42,6 +42,7 @@
                 "Release",
                 "--",
                 "GetHelloWorldActivity",
+                "--world-name",
                 "Saturn"
             ],
             "options": {
@@ -51,7 +52,25 @@
         },
         {
             "command": "dotnet",
-            "taskName": "dotnet run GetHelloWorldReportActivity [Release]",
+            "label": "dotnet run GetHelloWorldActivit Help [Release]",
+            "isBackground": true,
+            "type": "shell",
+            "args": [
+                "run",
+                "--configuration",
+                "Release",
+                "--",
+                "GetHelloWorldActivity",
+                "--help"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}/Songhay.HelloWorlds.Shell"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "command": "dotnet",
+            "label": "dotnet run GetHelloWorldReportActivity [Release]",
             "isBackground": true,
             "type": "shell",
             "args": [
