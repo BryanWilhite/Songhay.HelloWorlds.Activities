@@ -15,10 +15,7 @@ namespace Songhay.HelloWorlds.Activities
         {
             if (!args.HelpSet.Any()) this.SetupHelp(args);
 
-            return string.Concat(
-                FrameworkAssemblyUtility.GetAssemblyInfo(this.GetType().Assembly),
-                args.ToHelpDisplayText()
-            );
+            return args.ToHelpDisplayText();
         }
 
         public void Start(ProgramArgs args)
