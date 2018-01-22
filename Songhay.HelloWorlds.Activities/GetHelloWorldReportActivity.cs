@@ -7,7 +7,12 @@ namespace Songhay.HelloWorlds.Activities
 {
     public class GetHelloWorldReportActivity : IActivity
     {
-        static GetHelloWorldReportActivity() => traceSource = TraceSources.Instance.GetConfiguredTraceSource().WithAllSourceLevels();
+        static GetHelloWorldReportActivity() => traceSource = TraceSources
+            .Instance
+            .GetTraceSourceFromConfiguredName()
+            .WithAllSourceLevels()
+            .EnsureTraceSource();
+
         static readonly TraceSource traceSource;
 
         public string DisplayHelp(ProgramArgs args)

@@ -52,7 +52,7 @@
         },
         {
             "command": "dotnet",
-            "label": "dotnet run GetHelloWorldActivit Help [Release]",
+            "label": "dotnet run GetHelloWorldActivity Help [Release]",
             "isBackground": true,
             "type": "shell",
             "args": [

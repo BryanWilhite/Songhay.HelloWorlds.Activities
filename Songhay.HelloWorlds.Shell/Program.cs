@@ -1,17 +1,17 @@
-﻿using Songhay.Diagnostics;
+﻿using Microsoft.Extensions.Configuration;
+using Songhay.Diagnostics;
 using Songhay.Extensions;
 using Songhay.HelloWorlds.Activities;
+using Songhay.Models;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 
 namespace Songhay.HelloWorlds.Shell
 {
     class Program
     {
-        static Program() => traceSource = TraceSources.Instance.GetConfiguredTraceSource().WithAllSourceLevels();
-        static readonly TraceSource traceSource;
-
         static void Main(string[] args)
         {
             Console.Write(FrameworkAssemblyUtility.GetAssemblyInfo(Assembly.GetExecutingAssembly(), true));
@@ -19,8 +19,22 @@ namespace Songhay.HelloWorlds.Shell
             Console.WriteLine("Activities Assembly:");
             Console.Write(FrameworkAssemblyUtility.GetAssemblyInfo(typeof(MyActivitiesGetter).Assembly, true));
 
+            Console.WriteLine("Loading configuration...");
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("./appsettings.json");
+
+            Console.WriteLine("Building configuration...");
+            var configuration = builder.Build();
+            TraceSources.ConfiguredTraceSourceName = configuration[DeploymentEnvironment.DefaultTraceSourceNameConfigurationKey];
+
             using (var listener = new TextWriterTraceListener(Console.Out))
             {
+                var traceSource = TraceSources
+                    .Instance
+                    .GetTraceSourceFromConfiguredName()
+                    .WithAllSourceLevels()
+                    .EnsureTraceSource();
                 traceSource.Listeners.Add(listener);
 
                 var getter = new MyActivitiesGetter(args);
