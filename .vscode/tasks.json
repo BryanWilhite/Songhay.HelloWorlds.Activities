@@ -116,10 +116,24 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "test [Songhay.HelloWorlds.Functions.Tests, filtered by selected text]",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "test",
+                "${workspaceFolder}/Songhay.HelloWorlds.Functions.Tests/Songhay.HelloWorlds.Functions.Tests.csproj",
+                "--filter:${selectedText}",
+                "--logger:trx",
+                "--results-directory:${workspaceFolder}/TestResults",
+                "--verbosity:normal"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
             "type": "func",
             "dependsOn": "build",
             "options": {
-                "cwd": "${workspaceFolder}/bin/Debug/netcoreapp2.1"
+                "cwd": "${workspaceFolder}/Songhay.HelloWorlds.Functions/bin/Debug/netcoreapp2.1"
             },
             "command": "host start",
             "isBackground": true,
