@@ -10,8 +10,7 @@ namespace Songhay.HelloWorlds.Activities
         static GetHelloWorldReportActivity() => traceSource = TraceSources
             .Instance
             .GetTraceSourceFromConfiguredName()
-            .WithAllSourceLevels()
-            .EnsureTraceSource();
+            .WithSourceLevels();
 
         static readonly TraceSource traceSource;
 
@@ -22,7 +21,7 @@ namespace Songhay.HelloWorlds.Activities
 
         public void Start(ProgramArgs args)
         {
-            traceSource.TraceInformation("Sorry, but the Hello Worlds reports are not yet available :(");
+            traceSource?.TraceInformation("Sorry, but the Hello Worlds reports are not yet available :(");
         }
     }
 }

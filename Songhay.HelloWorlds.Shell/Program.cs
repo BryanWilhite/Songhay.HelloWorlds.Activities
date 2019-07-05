@@ -33,7 +33,7 @@ namespace Songhay.HelloWorlds.Shell
                 var traceSource = TraceSources
                     .Instance
                     .GetTraceSourceFromConfiguredName()
-                    .WithAllSourceLevels()
+                    .WithSourceLevels()
                     .EnsureTraceSource();
                 traceSource.Listeners.Add(listener);
 

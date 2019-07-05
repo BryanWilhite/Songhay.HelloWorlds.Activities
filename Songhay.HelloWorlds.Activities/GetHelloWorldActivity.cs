@@ -11,8 +11,7 @@ namespace Songhay.HelloWorlds.Activities
         static GetHelloWorldActivity() => traceSource = TraceSources
             .Instance
             .GetTraceSourceFromConfiguredName()
-            .WithAllSourceLevels()
-            .EnsureTraceSource();
+            .WithSourceLevels();
 
         static readonly TraceSource traceSource;
 
@@ -28,7 +27,7 @@ namespace Songhay.HelloWorlds.Activities
             if (args.IsHelpRequest()) return;
 
             var worldName = args.GetArgValue(argWorldName);
-            traceSource.EnsureTraceSource().TraceInformation($"Hello from world {worldName}!");
+            traceSource?.TraceInformation($"Hello from world {worldName}!");
         }
 
         void SetupHelp(ProgramArgs args)
