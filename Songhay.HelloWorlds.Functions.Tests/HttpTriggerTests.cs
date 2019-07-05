@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using Songhay.Extensions;
 using System;
 using System.Threading.Tasks;
@@ -8,11 +9,28 @@ using Xunit.Abstractions;
 
 namespace Songhay.HelloWorlds.Functions.Tests
 {
-    public class LocalTests
+    public class HttpTriggerTests
     {
-        public LocalTests(ITestOutputHelper helper)
+        public HttpTriggerTests(ITestOutputHelper helper)
         {
             this._testOutputHelper = helper;
+        }
+
+        [Theory]
+        [InlineData("/ActivityTrigger", "GetHelloWorldActivity Jupiter")]
+        public async Task ActivityTrigger_Test(string path, string args)
+        {
+            // arrange
+            var uri = new Uri($"{LOCAL}{path}", UriKind.Absolute);
+            var message = new HttpRequestMessage(HttpMethod.Post, uri);
+
+            //act
+            this._testOutputHelper.WriteLine($"{nameof(uri)}: {uri.OriginalString}");
+            var jO = JObject.FromObject(new {args});
+            var response = await message.SendBodyAsync(jO.ToString());
+
+            // assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Theory]

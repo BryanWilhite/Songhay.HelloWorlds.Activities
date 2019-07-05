@@ -44,7 +44,7 @@ namespace Songhay.HelloWorlds.Functions
             var requestBody = await req.GetRawBodyStringAsync();
             var jO = JObject.Parse(requestBody);
 
-            var args = jO["args"]?.Value<JArray>()?.ToObject<string[]>();
+            var args = jO["args"]?.Value<string>()?.Split(" ");
             if(args == null) return new BadRequestObjectResult("The expected Activity args is not here.");
 
             var getter = new MyActivitiesGetter(args);
