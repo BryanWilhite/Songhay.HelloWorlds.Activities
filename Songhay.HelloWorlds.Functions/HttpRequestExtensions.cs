@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace Songhay.Extensions
-{
+{ //TODO: move to some shared Studio library for ASP.NET Core
+
     /// <summary>
     /// Extensions of <see cref="HttpRequest" />
     /// </summary>
