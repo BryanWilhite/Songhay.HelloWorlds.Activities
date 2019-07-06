@@ -5,8 +5,11 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Songhay.Diagnostics;
 using Songhay.Extensions;
 using Songhay.HelloWorlds.Activities;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +17,18 @@ namespace Songhay.HelloWorlds.Functions
 {
     public static class HttpTrigger
     {
+        static HttpTrigger()
+        {
+            TraceSources.ConfiguredTraceSourceName = $"trace-{nameof(HttpTrigger)}";
+            traceSource = TraceSources
+               .Instance
+               .GetConfiguredTraceSource()
+               .WithSourceLevels()
+               .EnsureTraceSource();
+        }
+
+        static readonly TraceSource traceSource;
+
         [FunctionName("HttpTrigger")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, GET, POST, Route = null)]
@@ -56,7 +71,21 @@ namespace Songhay.HelloWorlds.Functions
             if (getter.Args.IsHelpRequest())
                 log.LogInformation(activity.DisplayHelp(getter.Args));
 
-            activity.Start(getter.Args);
+            using (var writer = new StringWriter())
+            using (var listener = new TextWriterTraceListener(writer))
+            {
+                traceSource.Listeners.Add(listener);
+
+                try
+                {
+                    activity.Start(getter.Args);
+                }
+                finally
+                {
+                    listener.Flush();
+                    log.LogInformation(writer.ToString());
+                }
+            }
 
             return (ActionResult)new OkResult();
         }
