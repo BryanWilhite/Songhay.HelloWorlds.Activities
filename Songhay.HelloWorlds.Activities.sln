@@ -13,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Songhay.HelloWorlds.Shell", "Songhay.HelloWorlds.Shell\Songhay.HelloWorlds.Shell.csproj", "{2DF98A86-D9E3-494A-85D7-1FF5666AD399}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Songhay.HelloWorlds.Functions", "Songhay.HelloWorlds.Functions\Songhay.HelloWorlds.Functions.csproj", "{BE1908AA-6AA0-480B-9C03-20432DC73861}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Songhay.HelloWorlds.Functions", "Songhay.HelloWorlds.Functions\Songhay.HelloWorlds.Functions.csproj", "{BE1908AA-6AA0-480B-9C03-20432DC73861}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Songhay.HelloWorlds.Functions.Tests", "Songhay.HelloWorlds.Functions.Tests\Songhay.HelloWorlds.Functions.Tests.csproj", "{18DED80A-F37C-47A0-9C8C-237013404EF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{BE1908AA-6AA0-480B-9C03-20432DC73861}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE1908AA-6AA0-480B-9C03-20432DC73861}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE1908AA-6AA0-480B-9C03-20432DC73861}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18DED80A-F37C-47A0-9C8C-237013404EF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18DED80A-F37C-47A0-9C8C-237013404EF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18DED80A-F37C-47A0-9C8C-237013404EF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18DED80A-F37C-47A0-9C8C-237013404EF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

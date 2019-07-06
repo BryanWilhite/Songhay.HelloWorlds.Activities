@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <Authors>Bryan D. Wilhite</Authors>
     <Company>Songhay System</Company>
     <Description>This is a simple demonstration of the Songhay System Shell Activities architecture.</Description>

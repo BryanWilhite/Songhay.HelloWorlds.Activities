@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Songhay.Extensions;
 using Songhay.HelloWorlds.Activities;
-using Songhay.Models;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Songhay.HelloWorlds.Functions
@@ -45,10 +45,13 @@ namespace Songhay.HelloWorlds.Functions
             var jO = JObject.Parse(requestBody);
 
             var args = jO["args"]?.Value<string>()?.Split(" ");
-            if(args == null) return new BadRequestObjectResult("The expected Activity args is not here.");
+            if ((args == null) || (!args.Any()))
+                return new BadRequestObjectResult("The expected Activity args are not here.");
 
             var getter = new MyActivitiesGetter(args);
             var activity = getter.GetActivity();
+
+            if (activity == null) return new NotFoundResult();
 
             if (getter.Args.IsHelpRequest())
                 log.LogInformation(activity.DisplayHelp(getter.Args));
@@ -59,6 +62,6 @@ namespace Songhay.HelloWorlds.Functions
         }
 
         const string GET = "get";
-        const string POST = "get";
+        const string POST = "post";
     }
 }
