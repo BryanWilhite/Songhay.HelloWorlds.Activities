@@ -31,11 +31,6 @@ namespace Songhay.HelloWorlds.Activities
             traceSource?.TraceInformation($"Hello from world {worldName}!");
         }
 
-        public Task<TResult> StartAsync<TResult>(ProgramArgs args)
-        {
-            throw new System.NotImplementedException();
-        }
-
         void SetupHelp(ProgramArgs args)
         {
             var indentation = string.Join(string.Empty, Enumerable.Repeat(" ", 4).ToArray());
