@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Songhay.HelloWorlds.Activities
 {
-    public class GetHelloWorldOutputActivity : GetHelloWorldActivity, IActivityOutput<string>
+    public class GetHelloWorldOutputActivity : GetHelloWorldActivity, IActivityOutput<ProgramArgs, string>
     {
         public Task<string> StartAsync(ProgramArgs args)
         {
