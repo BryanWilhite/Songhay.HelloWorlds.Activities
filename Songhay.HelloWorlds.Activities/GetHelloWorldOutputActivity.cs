@@ -6,7 +6,7 @@ namespace Songhay.HelloWorlds.Activities
 {
     public class GetHelloWorldOutputActivity : GetHelloWorldActivity, IActivityOutput<ProgramArgs, string>
     {
-        public Task<string> StartAsync(ProgramArgs args)
+        public Task<string> StartAsync(ProgramArgs input)
         {
             throw new NotImplementedException();
         }
