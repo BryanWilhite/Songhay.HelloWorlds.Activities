@@ -3,7 +3,6 @@ using Songhay.Extensions;
 using Songhay.Models;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Songhay.HelloWorlds.Activities
 {
@@ -25,8 +24,6 @@ namespace Songhay.HelloWorlds.Activities
 
         public void Start(ProgramArgs args)
         {
-            if (args.IsHelpRequest()) return;
-
             var worldName = args.GetArgValue(argWorldName);
             traceSource?.TraceInformation($"Hello from world {worldName}!");
         }
