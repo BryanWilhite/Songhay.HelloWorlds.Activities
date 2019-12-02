@@ -54,4 +54,31 @@ sudo npm install -g azure-functions-core-tools --unsafe-perm=true --allow-root
 
 This issue might be exclusive to a Linux environment.
 
+## running the tests
+
+### from Visual Studio
+
+In Visual Studio, ensure that the `Songhay.HelloWorlds.Functions` project is the [StartUp project](https://blogs.msdn.microsoft.com/zainnab/2010/05/09/choosing-the-startup-project/). Hitting `F5` will start the local version of Azure Functions but it will _not_ be possible to run tests while Azure Functions is running. Visual Studio Code (VSCode) can be handy here as the tests, specifically the `HttpTriggerTests` [tests](./HttpTriggerTests.cs), can be run from VSCode.
+
+### from Visual Studio Code
+
+In Visual Studio Code this task is defined:
+
+```json
+{
+    "type": "func",
+    "dependsOn": "build",
+    "options": {
+        "cwd": "${workspaceFolder}/Songhay.HelloWorlds.Functions"
+    },
+    "command": "start --build --csharp",
+    "isBackground": true,
+    "problemMatcher": "$func-watch"
+}
+```
+
+It is based on [a command from the docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#c).
+
+It is also not possible to debug tests from VSCode while this IDE is running a local version of Azure Functions and Visual Studio would come in handy to run tests.
+
 @[BryanWilhite](https://twitter.com/BryanWilhite)

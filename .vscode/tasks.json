@@ -135,7 +135,7 @@
             "options": {
                 "cwd": "${workspaceFolder}/Songhay.HelloWorlds.Functions"
             },
-            "command": "host start",
+            "command": "start --build --csharp",
             "isBackground": true,
             "problemMatcher": "$func-watch"
         }
