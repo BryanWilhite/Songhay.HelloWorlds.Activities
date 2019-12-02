@@ -51,3 +51,7 @@ sudo npm install -g azure-functions-core-tools --unsafe-perm=true --allow-root
 ```
 
 📚Reference: <https://github.com/Azure/azure-functions-core-tools/issues/331>
+
+This issue might be exclusive to a Linux environment.
+
+@[BryanWilhite](https://twitter.com/BryanWilhite)

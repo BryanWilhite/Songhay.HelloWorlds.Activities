@@ -11,12 +11,8 @@ namespace Songhay.HelloWorlds.Activities
             this.LoadActivities(new Dictionary<string, Lazy<IActivity>>
             {
                 {
-                    nameof(Activities.GetHelloWorldActivity),
-                    new Lazy<IActivity>(() => new Activities.GetHelloWorldActivity())
-                },
-                {
-                    nameof(Activities.GetHelloWorldReportActivity),
-                    new Lazy<IActivity>(() => new Activities.GetHelloWorldReportActivity())
+                    nameof(Activities.GetHelloWorldOutputActivity),
+                    new Lazy<IActivity>(() => new Activities.GetHelloWorldOutputActivity())
                 }
             });
         }
