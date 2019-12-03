@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
@@ -18,11 +17,11 @@ using System.Web;
 
 namespace Songhay.HelloWorlds.Functions
 {
-    public static class HttpTrigger
+    public static class StatelessFunctions
     {
-        static HttpTrigger()
+        static StatelessFunctions()
         {
-            TraceSources.ConfiguredTraceSourceName = $"trace-{nameof(HttpTrigger)}";
+            TraceSources.ConfiguredTraceSourceName = $"trace-{nameof(StatelessFunctions)}";
             traceSource = TraceSources
                .Instance
                .GetConfiguredTraceSource()
@@ -31,12 +30,6 @@ namespace Songhay.HelloWorlds.Functions
         }
 
         static readonly TraceSource traceSource;
-
-        public const string FUNC_NAME_HTTP_TRIGGER = "HttpTrigger";
-        public const string FUNC_NAME_ACTIVITY_TRIGGER = "ActivityTrigger";
-        public const string FUNC_NAME_ORCH = "Orchestration";
-        public const string FUNC_NAME_ORCH_FUNC = "OrchestratedFunction";
-        public const string FUNC_NAME_ORCH_TRIGGER = "OrchestrationTrigger";
 
         [FunctionName(FUNC_NAME_HTTP_TRIGGER)]
         public static async Task<HttpResponseMessage> Run(
@@ -58,19 +51,20 @@ namespace Songhay.HelloWorlds.Functions
         }
 
         [FunctionName(FUNC_NAME_ACTIVITY_TRIGGER)]
-        public static async Task<IActionResult> RunActivity(
+        public static async Task<HttpResponseMessage> RunActivity(
             [HttpTrigger(AuthorizationLevel.Anonymous, POST, Route = null)]
-            HttpRequestMessage req,
+            HttpRequestMessage request,
             ILogger log)
         {
             log?.LogInformation($"{FUNC_NAME_ACTIVITY_TRIGGER}: {nameof(RunActivity)} invoked...");
 
-            var requestBody = await req.Content.ReadAsStringAsync();
+            var requestBody = await request.Content.ReadAsStringAsync();
             var jO = JObject.Parse(requestBody);
 
             var args = jO.GetValue<string>("args", throwException: false).Split(" ");
             if ((args == null) || (!args.Any()))
-                return new BadRequestObjectResult($"{FUNC_NAME_ACTIVITY_TRIGGER}: The expected Activity args are not here.");
+                return request.CreateResponse(HttpStatusCode.BadRequest,
+                    $"{FUNC_NAME_ACTIVITY_TRIGGER}: The expected Activity args are not here.");
 
             var getter = new MyActivitiesGetter(args);
             var activity = getter.GetActivity();
@@ -78,7 +72,7 @@ namespace Songhay.HelloWorlds.Functions
             if (activity == null)
             {
                 log?.LogError($"{FUNC_NAME_ACTIVITY_TRIGGER}: the expected Activity is not here [{nameof(args)}: {string.Join(",", args)}].");
-                return new NotFoundResult();
+                return request.CreateResponse(HttpStatusCode.NotFound);
             }
 
             if (getter.Args.IsHelpRequest())
@@ -86,36 +80,7 @@ namespace Songhay.HelloWorlds.Functions
             else
                 StartActivity(getter.Args, activity, log);
 
-            return (ActionResult)new OkResult();
-        }
-
-        [FunctionName(FUNC_NAME_ORCH)]
-        public static async Task<HttpResponseMessage> RunOrchestration(
-            [HttpTrigger(AuthorizationLevel.Anonymous, GET, POST, Route = null)]
-            HttpRequestMessage req,
-            [OrchestrationClient]
-            DurableOrchestrationClient client,
-            ILogger log)
-        {
-            log?.LogInformation($"{FUNC_NAME_ORCH}: {nameof(RunOrchestration)} invoked...");
-
-            string instanceId = await client.StartNewAsync(FUNC_NAME_ORCH_FUNC, "Nuget");
-
-            log.LogInformation($"{FUNC_NAME_ORCH}: orchestration started [{nameof(instanceId)}: {instanceId}].");
-
-            return client.CreateCheckStatusResponse(req, instanceId);
-        }
-
-        [FunctionName(FUNC_NAME_ORCH_FUNC)]
-        public static async Task<string> RunOrchestratedFunction(
-            [OrchestrationTrigger] DurableOrchestrationContext orchestrationContext,
-            [ActivityTrigger] DurableActivityContext context,
-            ILogger log)
-        {
-            log?.LogInformation($"{FUNC_NAME_ORCH_FUNC}: {nameof(RunOrchestratedFunction)} invoked...");
-            log?.LogInformation($"{FUNC_NAME_ORCH_FUNC}: {nameof(DurableOrchestrationContextBase.InstanceId)} {orchestrationContext.InstanceId}");
-
-            return await Task.FromResult("");
+            return request.CreateResponse(HttpStatusCode.OK);
         }
 
         internal static void StartActivity(ProgramArgs args, IActivity activity, ILogger log)
@@ -139,5 +104,8 @@ namespace Songhay.HelloWorlds.Functions
 
         const string GET = "get";
         const string POST = "post";
+
+        const string FUNC_NAME_HTTP_TRIGGER = "HttpTrigger";
+        const string FUNC_NAME_ACTIVITY_TRIGGER = "ActivityTrigger";
     }
 }
