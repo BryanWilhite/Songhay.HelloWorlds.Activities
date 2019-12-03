@@ -81,4 +81,12 @@ It is based on [a command from the docs](https://docs.microsoft.com/en-us/azure/
 
 It is also not possible to debug tests from VSCode while this IDE is running a local version of Azure Functions and Visual Studio would come in handy to debug tests (⚠ the HTTP calls in test code should hit debug breakpoints but the decoupled function logic should not hit). However it _is_ possible to run tests from VSCode _without_ debugging them.
 
+## related links
+
+- “[Optimize the performance and reliability of Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-best-practices)”
+- “[Create your first function using Visual Studio Code](https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-function-vs-code)” [⚠ warning: see [#7](https://github.com/BryanWilhite/Songhay.HelloWorlds.Activities/issues/7)]
+- “[Introducing Azure Functions 2.0](https://azure.microsoft.com/en-us/blog/introducing-azure-functions-2-0/)”
+- [Azure serverless community library](https://www.serverlesslibrary.net/)
+- [Quickly Restore your Local Settings File for Azure Functions](https://microsoft.github.io/AzureTipsAndTricks/blog/tip136.html)
+
 @[BryanWilhite](https://twitter.com/BryanWilhite)
