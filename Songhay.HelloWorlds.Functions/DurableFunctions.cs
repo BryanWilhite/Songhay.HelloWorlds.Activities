@@ -93,7 +93,7 @@ namespace Songhay.HelloWorlds.Functions
 
             var pair = context.GetInput<KeyValuePair<string, string>>();
 
-            log?.LogInformation($"getting activity for {nameof(pair)} `{pair.Key ?? "[null"}, {pair.Value ?? "[null"}`");
+            log?.LogInformation($"getting activity for {nameof(pair)} `{pair.Key ?? "[null]"}, {pair.Value ?? "[null]"}`");
 
             var getter = new MyActivitiesGetter(new[] { pair.Key, pair.Value });
             var activity = getter.GetActivity();
