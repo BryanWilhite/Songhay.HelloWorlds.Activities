@@ -58,7 +58,7 @@ This issue might be exclusive to a Linux environment.
 
 ### from Visual Studio
 
-In Visual Studio, ensure that the `Songhay.HelloWorlds.Functions` project is the [StartUp project](https://blogs.msdn.microsoft.com/zainnab/2010/05/09/choosing-the-startup-project/). Hitting `F5` will start the local version of Azure Functions but it will _not_ be possible to run tests while Azure Functions is running. Visual Studio Code (VSCode) can be handy here as the tests, specifically the `HttpTriggerTests` [tests](./HttpTriggerTests.cs), can be run from VSCode.
+In Visual Studio, ensure that the `Songhay.HelloWorlds.Functions` project is the [StartUp project](https://blogs.msdn.microsoft.com/zainnab/2010/05/09/choosing-the-startup-project/). Hitting `F5` will start the local version of Azure Functions but it will _not_ be possible to debug tests while Azure Functions is running. Visual Studio Code (VSCode) can be handy here as the tests, specifically the `HttpTriggerTests` [tests](./HttpTriggerTests.cs), can be run from VSCode (and any breakpoints set in Functions and/or Activities code should be hit).
 
 ### from Visual Studio Code
 
@@ -79,6 +79,6 @@ In Visual Studio Code this task is defined:
 
 It is based on [a command from the docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#c).
 
-It is also not possible to debug tests from VSCode while this IDE is running a local version of Azure Functions and Visual Studio would come in handy to run tests.
+It is also not possible to debug tests from VSCode while this IDE is running a local version of Azure Functions and Visual Studio would come in handy to debug tests (⚠ the HTTP calls in test code should hit debug breakpoints but the decoupled function logic should not hit). However it _is_ possible to run tests from VSCode _without_ debugging them.
 
 @[BryanWilhite](https://twitter.com/BryanWilhite)

@@ -17,7 +17,7 @@ namespace Songhay.HelloWorlds.Functions.Tests
         }
 
         [Theory]
-        [InlineData("/ActivityTrigger", "GetHelloWorldActivity Jupiter")]
+        [InlineData("/ActivityTrigger", "GetHelloWorldOutputActivity Jupiter")]
         public async Task ActivityTrigger_Test(string path, string args)
         {
             // arrange
