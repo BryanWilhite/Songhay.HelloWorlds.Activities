@@ -5,11 +5,9 @@ using Newtonsoft.Json.Linq;
 using Songhay.Diagnostics;
 using Songhay.Extensions;
 using Songhay.HelloWorlds.Activities;
-using Songhay.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -100,36 +98,16 @@ namespace Songhay.HelloWorlds.Functions
 
             if (activity == null)
             {
-                var errorMessage = $"{FUNC_NAME_ORCH_FUNC}: the expected Activity is not here [{nameof(pair)} `{pair.Key ?? "[null"}, {pair.Value ?? "[null"}`].";
+                var errorMessage = $"{FUNC_NAME_ORCH_FUNC}: the expected Activity is not here [{nameof(pair)} `{pair.Key ?? "[null]"}, {pair.Value ?? "[null]"}`].";
                 log?.LogError(errorMessage);
                 throw new NullReferenceException(errorMessage);
             }
 
-            return await StartActivityAsync(pair.Value, activity, log);
-        }
+            var activityOutput = await activity.StartActivityAsync<string, string>(pair.Value, traceSource);
 
-        internal static async Task<string> StartActivityAsync(string planetName, IActivity activity, ILogger log)
-        {
-            using (var writer = new StringWriter())
-            using (var listener = new TextWriterTraceListener(writer))
-            {
-                traceSource.Listeners.Add(listener);
+            log?.LogInformation(activityOutput.Log);
 
-                string output = null;
-
-                try
-                {
-                    var activityOutput = activity.ToIActivityOutput<string, string>();
-                    output = await activityOutput.StartAsync(planetName);
-                }
-                finally
-                {
-                    listener.Flush();
-                    log?.LogInformation(writer.ToString());
-                }
-
-                return output;
-            }
+            return activityOutput.Output;
         }
 
         const string GET = "get";

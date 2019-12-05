@@ -75,31 +75,14 @@ namespace Songhay.HelloWorlds.Functions
                 return request.CreateResponse(HttpStatusCode.NotFound);
             }
 
-            if (getter.Args.IsHelpRequest())
-                log?.LogInformation(activity.DisplayHelp(getter.Args));
+            if (getter.Args.IsHelpRequest()) log?.LogInformation(activity.DisplayHelp(getter.Args));
             else
-                StartActivity(getter.Args, activity, log);
+            {
+                var activityLog = activity.StartActivity(getter.Args, traceSource);
+                log?.LogInformation(activityLog);
+            }
 
             return request.CreateResponse(HttpStatusCode.OK);
-        }
-
-        internal static void StartActivity(ProgramArgs args, IActivity activity, ILogger log)
-        {
-            using (var writer = new StringWriter())
-            using (var listener = new TextWriterTraceListener(writer))
-            {
-                traceSource.Listeners.Add(listener);
-
-                try
-                {
-                    activity.Start(args);
-                }
-                finally
-                {
-                    listener.Flush();
-                    log?.LogInformation(writer.ToString());
-                }
-            }
         }
 
         const string GET = "get";
