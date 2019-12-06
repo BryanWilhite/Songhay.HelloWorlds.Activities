@@ -5,11 +5,9 @@ using Newtonsoft.Json.Linq;
 using Songhay.Diagnostics;
 using Songhay.Extensions;
 using Songhay.HelloWorlds.Activities;
-using Songhay.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -105,37 +103,11 @@ namespace Songhay.HelloWorlds.Functions
                 throw new NullReferenceException(errorMessage);
             }
 
-            var activityOutput = await activity.StartActivityAsync_Test<string, string>(pair.Value, traceSource);
+            var activityOutput = await activity.StartActivityAsync<string, string>(pair.Value, traceSource);
 
             log?.LogInformation(activityOutput.Log);
 
             return activityOutput.Output;
-        }
-
-        public static async Task<ActivityOutput<TOutput>> StartActivityAsync_Test<TInput, TOutput>(this IActivity activity, TInput input, TraceSource traceSource)
-        {
-            if (activity == null) throw new NullReferenceException($"The expected {nameof(IActivity)} is not here.");
-
-            using (var writer = new StringWriter())
-            using (var listener = new TextWriterTraceListener(writer))
-            {
-                traceSource?.Listeners.Add(listener);
-
-                var activityOutput = new ActivityOutput<TOutput>();
-
-                try
-                {
-                    var activityWithOutput = activity.ToActivityWithOutput<TInput, TOutput>();
-                    activityOutput.Output = await activityWithOutput.StartAsync(input);
-                }
-                finally
-                {
-                    listener.Flush();
-                    activityOutput.Log = writer.ToString();
-                }
-
-                return activityOutput;
-            }
         }
 
         const string GET = "get";

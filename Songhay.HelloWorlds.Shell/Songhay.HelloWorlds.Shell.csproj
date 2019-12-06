@@ -24,7 +24,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.TraceSource" Version="2.2.0" />
-    <PackageReference Include="SonghayCore" Version="3.2.14" />
+    <PackageReference Include="SonghayCore" Version="3.2.15" />
   </ItemGroup>
 
   <ItemGroup>
