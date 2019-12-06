@@ -5,6 +5,11 @@ namespace Songhay.HelloWorlds.Activities
 {
     public class GetHelloWorldOutputActivity : GetHelloWorldActivity, IActivityWithOutput<string, string>
     {
-        public Task<string> StartAsync(string input) => Task.FromResult(GetHelloWorldMessage(input));
+        public async Task<string> StartAsync(string input)
+        {
+            var message = GetHelloWorldMessage(input);
+            traceSource?.TraceInformation(message);
+            return await Task.FromResult(message);
+        }
     }
 }

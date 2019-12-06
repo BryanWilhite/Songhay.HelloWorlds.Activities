@@ -13,7 +13,7 @@ namespace Songhay.HelloWorlds.Activities
             .GetTraceSourceFromConfiguredName()
             .WithSourceLevels();
 
-        static readonly TraceSource traceSource;
+        internal static readonly TraceSource traceSource;
 
         public string DisplayHelp(ProgramArgs args)
         {

@@ -19,7 +19,7 @@ namespace Songhay.HelloWorlds.Functions
     {
         static DurableFunctions()
         {
-            TraceSources.ConfiguredTraceSourceName = $"trace-{nameof(StatelessFunctions)}";
+            TraceSources.ConfiguredTraceSourceName = $"trace-{nameof(DurableFunctions)}";
             traceSource = TraceSources
                .Instance
                .GetConfiguredTraceSource()
