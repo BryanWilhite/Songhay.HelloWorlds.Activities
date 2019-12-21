@@ -25,7 +25,7 @@ namespace Songhay.HelloWorlds.Activities
         public void Start(ProgramArgs args)
         {
             var worldName = args.GetArgValue(argWorldName);
-            traceSource?.TraceInformation(GetHelloWorldMessage(worldName));
+            traceSource?.WriteLine(GetHelloWorldMessage(worldName));
         }
 
         internal static string GetHelloWorldMessage(string worldName) => $"Hello from world {worldName}!";
