@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SonghayCore" Version="3.2.16" />
+    <PackageReference Include="SonghayCore" Version="3.2.18" />
   </ItemGroup>
 
 </Project>
