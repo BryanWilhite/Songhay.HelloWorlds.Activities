@@ -5,7 +5,7 @@ This is a simple demonstration of the Songhay System Activities ‘tiny’ archi
 Songhay System Activities is part of the `SonghayCore` [repo](https://github.com/BryanWilhite/SonghayCore). It is intended to encapsulate and decouple “business logic” running in:
 
 - any .NET Shell
-- any .NET [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) controller context
+- any .NET ASP.NET context, including Azure Functions
 - any .NET Service context of [a modular desktop application](https://prismlibrary.github.io/docs/wpf/legacy/Modules.html)
 
 ## key class definitions
