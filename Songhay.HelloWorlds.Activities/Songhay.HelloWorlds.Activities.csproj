@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <Authors>Bryan D. Wilhite</Authors>
     <Company>Songhay System</Company>
     <Description>This is a simple demonstration of the Songhay System Shell Activities architecture.</Description>
-    <Copyright>(c) 2017 Bryan D. Wilhite</Copyright>
+    <Copyright>(c) 2022 Bryan D. Wilhite</Copyright>
     <RepositoryUrl>https://github.com/BryanWilhite/Songhay.HelloWorlds.Activities</RepositoryUrl>
-    <AssemblyVersion>1.0.0.*</AssemblyVersion>
+    <AssemblyVersion>2022.2.21</AssemblyVersion>
     <Deterministic>False</Deterministic>
   </PropertyGroup>
 
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SonghayCore" Version="3.2.18" />
+    <PackageReference Include="SonghayCore" Version="5.2.1" />
   </ItemGroup>
 
 </Project>

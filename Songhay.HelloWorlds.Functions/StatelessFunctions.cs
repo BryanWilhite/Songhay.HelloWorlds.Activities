@@ -31,47 +31,65 @@ namespace Songhay.HelloWorlds.Functions
 
         static readonly TraceSource traceSource;
 
-        [FunctionName(FUNC_NAME_HTTP_TRIGGER)]
+        [FunctionName(FuncNameHttpTrigger)]
         public static async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, GET, POST, Route = null)]
+            [HttpTrigger(AuthorizationLevel.Anonymous, Get, Post, Route = null)]
             HttpRequestMessage request,
             ILogger log)
         {
-            log?.LogInformation($"{FUNC_NAME_HTTP_TRIGGER}: C# HTTP trigger function processed a request.");
+            log?.LogInformation($"{FuncNameHttpTrigger}: C# HTTP trigger function processed a request.");
 
-            string name = HttpUtility.ParseQueryString(request.RequestUri.Query).Get("name");
+            if (request.Content == null)
+                return new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    ReasonPhrase = "The expected Request Content is not here."
+                };
 
-            string requestBody = await request.Content.ReadAsStringAsync();
+            if (request.RequestUri == null)
+                return new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    ReasonPhrase = "The expected Request URI is not here."
+                };
+
+            var name = HttpUtility.ParseQueryString(request.RequestUri.Query).Get("name");
+
+            var requestBody = await request.Content.ReadAsStringAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            name ??= data?.name;
 
             return name != null
                 ? request.CreateResponse(HttpStatusCode.OK, $"Hello, {name}")
                 : request.CreateErrorResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body");
         }
 
-        [FunctionName(FUNC_NAME_ACTIVITY_TRIGGER)]
+        [FunctionName(FuncNameActivityTrigger)]
         public static async Task<HttpResponseMessage> RunActivity(
-            [HttpTrigger(AuthorizationLevel.Anonymous, POST, Route = null)]
+            [HttpTrigger(AuthorizationLevel.Anonymous, Post, Route = null)]
             HttpRequestMessage request,
             ILogger log)
         {
-            log?.LogInformation($"{FUNC_NAME_ACTIVITY_TRIGGER}: {nameof(RunActivity)} invoked...");
+            log?.LogInformation($"{FuncNameActivityTrigger}: {nameof(RunActivity)} invoked...");
+
+            if (request.Content == null)
+                return new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    ReasonPhrase = "The expected Request Content is not here."
+                };
 
             var requestBody = await request.Content.ReadAsStringAsync();
             var jO = JObject.Parse(requestBody);
 
             var args = jO.GetValue<string>("args", throwException: false).Split(" ");
-            if ((args == null) || (!args.Any()))
+            if (!args.Any())
                 return request.CreateResponse(HttpStatusCode.BadRequest,
-                    $"{FUNC_NAME_ACTIVITY_TRIGGER}: The expected Activity args are not here.");
+                    $"{FuncNameActivityTrigger}: The expected Activity args are not here.");
 
             var getter = new MyActivitiesGetter(args);
             var activity = getter.GetActivity();
 
             if (activity == null)
             {
-                log?.LogError($"{FUNC_NAME_ACTIVITY_TRIGGER}: the expected Activity is not here [{nameof(args)}: {string.Join(",", args)}].");
+                log?.LogError($"{FuncNameActivityTrigger}: the expected Activity is not here [{nameof(args)}: {string.Join(",", args)}].");
                 return request.CreateResponse(HttpStatusCode.NotFound);
             }
 
@@ -85,10 +103,10 @@ namespace Songhay.HelloWorlds.Functions
             return request.CreateResponse(HttpStatusCode.OK);
         }
 
-        const string GET = "get";
-        const string POST = "post";
+        const string Get = nameof(HttpMethod.Get);
+        const string Post = nameof(HttpMethod.Post);
 
-        const string FUNC_NAME_HTTP_TRIGGER = "HttpTrigger";
-        const string FUNC_NAME_ACTIVITY_TRIGGER = "ActivityTrigger";
+        const string FuncNameHttpTrigger = "HttpTrigger";
+        const string FuncNameActivityTrigger = "ActivityTrigger";
     }
 }

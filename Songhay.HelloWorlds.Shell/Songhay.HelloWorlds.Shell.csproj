@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <Authors>Bryan D. Wilhite</Authors>
     <Company>Songhay System</Company>
     <Description>This is a simple demonstration of the Songhay System Shell Activities architecture.</Description>
-    <Copyright>(c) 2017 Bryan D. Wilhite</Copyright>
+    <Copyright>(c) 2022 Bryan D. Wilhite</Copyright>
     <RepositoryUrl>https://github.com/BryanWilhite/Songhay.HelloWorlds.Activities</RepositoryUrl>
-    <AssemblyVersion>1.0.0.*</AssemblyVersion>
+    <AssemblyVersion>2022.2.21</AssemblyVersion>
     <Deterministic>False</Deterministic>
   </PropertyGroup>
 
@@ -17,14 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.TraceSource" Version="2.2.0" />
-    <PackageReference Include="SonghayCore" Version="3.2.18" />
+    <PackageReference Include="SonghayCore" Version="5.2.1" />
   </ItemGroup>
 
   <ItemGroup>

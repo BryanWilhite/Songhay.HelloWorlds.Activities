@@ -13,10 +13,10 @@ namespace Songhay.HelloWorlds.Shell
     {
         static void DisplayCredits()
         {
-            Console.Write(FrameworkAssemblyUtility.GetAssemblyInfo(Assembly.GetExecutingAssembly(), true));
+            Console.Write(ProgramAssemblyUtility.GetAssemblyInfo(Assembly.GetExecutingAssembly(), true));
             Console.WriteLine(string.Empty);
             Console.WriteLine("Activities Assembly:");
-            Console.Write(FrameworkAssemblyUtility.GetAssemblyInfo(typeof(MyActivitiesGetter).Assembly, true));
+            Console.Write(ProgramAssemblyUtility.GetAssemblyInfo(typeof(MyActivitiesGetter).Assembly, true));
         }
 
         static void Main(string[] args)

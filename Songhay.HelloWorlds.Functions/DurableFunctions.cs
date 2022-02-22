@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -29,65 +30,76 @@ namespace Songhay.HelloWorlds.Functions
 
         static readonly TraceSource traceSource;
 
-        [FunctionName(FUNC_NAME_ORCH_TRIGGER)]
+        [FunctionName(FuncNameOrchTrigger)]
         public static async Task<HttpResponseMessage> TriggerOrchestration(
-            [HttpTrigger(AuthorizationLevel.Anonymous, GET, POST, Route = null)]
+            [HttpTrigger(AuthorizationLevel.Anonymous,
+                nameof(HttpMethod.Get),
+                nameof(HttpMethod.Post),
+                Route = null)]
             HttpRequestMessage request,
-            [OrchestrationClient]
-            DurableOrchestrationClient client,
+            [DurableClient]
+            IDurableOrchestrationClient client,
             ILogger log)
         {
-            log?.LogInformation($"{FUNC_NAME_ORCH_TRIGGER}: {nameof(TriggerOrchestration)} invoked...");
+            log?.LogInformation($"{FuncNameOrchTrigger}: {nameof(TriggerOrchestration)} invoked...");
+
+            if (request.Content == null)
+                return new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    ReasonPhrase = "The expected Request Content is not here."
+                };
 
             var requestBody = await request.Content.ReadAsStringAsync();
             var jO = JObject.Parse(requestBody);
 
             var args = jO.GetValue<string>("args", throwException: false).Split(" ");
-            if ((args == null) || (args.Count() < 2))
+            if (args.Length < 2)
                 return request.CreateResponse(HttpStatusCode.BadRequest,
-                    $"{FUNC_NAME_ORCH_TRIGGER}: The expected Activity args are not here.");
+                    $"{FuncNameOrchTrigger}: The expected Activity args are not here.");
 
-            string instanceId = await client.StartNewAsync(FUNC_NAME_ORCH, args);
+            var instanceId = await client.StartNewAsync(FuncNameOrch, args);
 
-            log.LogInformation($"{FUNC_NAME_ORCH_TRIGGER}: orchestration started [{nameof(instanceId)}: {instanceId}].");
+            log.LogInformation($"{FuncNameOrchTrigger}: orchestration started [{nameof(instanceId)}: {instanceId}].");
 
             return client.CreateCheckStatusResponse(request, instanceId);
         }
 
-        [FunctionName(FUNC_NAME_ORCH)]
+        [FunctionName(FuncNameOrch)]
         public static async Task<string> RunOrchestration(
-            [OrchestrationTrigger] DurableOrchestrationContext context,
+            [OrchestrationTrigger] IDurableOrchestrationContext context,
             ILogger log)
         {
-            log?.LogInformation($"{FUNC_NAME_ORCH}: {nameof(RunOrchestration)} invoked...");
-            log?.LogInformation($"{FUNC_NAME_ORCH}: {nameof(DurableOrchestrationContextBase.InstanceId)} {context.InstanceId}");
+            log?.LogInformation($"{FuncNameOrch}: {nameof(RunOrchestration)} invoked...");
+            log?.LogInformation($"{FuncNameOrch}: {nameof(IDurableOrchestrationContext.InstanceId)} {context.InstanceId}");
 
             var args = context.GetInput<string[]>();
 
-            if ((args == null) || !args.Any())
+            if (args == null || !args.Any())
             {
-                var errorMessage = $"{FUNC_NAME_ORCH}: The expected Activity args are not here.";
+                const string errorMessage = $"{FuncNameOrch}: The expected Activity args are not here.";
                 log?.LogError(errorMessage);
                 throw new NullReferenceException(errorMessage);
             }
 
             var className = args.First();
-            var tasks = args
-                .Skip(1)
-                .Select(planetName => context.CallActivityAsync<string>(FUNC_NAME_ORCH_FUNC, new KeyValuePair<string, string>(className, planetName)));
+
             //fan out
-            await Task.WhenAll(tasks);
+            foreach (var planetName in args.Skip(1))
+            {
+                var pair = new KeyValuePair<string, string>(className, planetName);
+                await context.CallActivityAsync<string>(FuncNameOrchFunc, pair);
+            }
 
             return context.InstanceId;
         }
 
-        [FunctionName(FUNC_NAME_ORCH_FUNC)]
+        [FunctionName(FuncNameOrchFunc)]
         public static async Task<string> RunOrchestratedFunction(
-            [ActivityTrigger] DurableActivityContext context,
+            [ActivityTrigger] IDurableActivityContext context,
             ILogger log)
         {
-            log?.LogInformation($"{FUNC_NAME_ORCH_FUNC}: {nameof(RunOrchestratedFunction)} invoked...");
-            log?.LogInformation($"{FUNC_NAME_ORCH_FUNC}: {nameof(DurableActivityContext.InstanceId)} {context.InstanceId}");
+            log?.LogInformation($"{FuncNameOrchFunc}: {nameof(RunOrchestratedFunction)} invoked...");
+            log?.LogInformation($"{FuncNameOrch}: {nameof(IDurableOrchestrationContext.InstanceId)} {context.InstanceId}");
 
             var pair = context.GetInput<KeyValuePair<string, string>>();
 
@@ -98,7 +110,7 @@ namespace Songhay.HelloWorlds.Functions
 
             if (activity == null)
             {
-                var errorMessage = $"{FUNC_NAME_ORCH_FUNC}: the expected Activity is not here [{nameof(pair)} `{pair.Key ?? "[null]"}, {pair.Value ?? "[null]"}`].";
+                var errorMessage = $"{FuncNameOrchFunc}: the expected Activity is not here [{nameof(pair)} `{pair.Key ?? "[null]"}, {pair.Value ?? "[null]"}`].";
                 log?.LogError(errorMessage);
                 throw new NullReferenceException(errorMessage);
             }
@@ -110,11 +122,8 @@ namespace Songhay.HelloWorlds.Functions
             return activityOutput.Output;
         }
 
-        const string GET = "get";
-        const string POST = "post";
-
-        const string FUNC_NAME_ORCH = "Orchestration";
-        const string FUNC_NAME_ORCH_FUNC = "OrchestratedFunction";
-        const string FUNC_NAME_ORCH_TRIGGER = "OrchestrationTrigger";
+        const string FuncNameOrch = "Orchestration";
+        const string FuncNameOrchFunc = "OrchestratedFunction";
+        const string FuncNameOrchTrigger = "OrchestrationTrigger";
     }
 }
