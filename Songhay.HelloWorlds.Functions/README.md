@@ -7,6 +7,7 @@ The recommendations for Q1 2022 are:
 - consider .NET 6.0 and Azure Functions 4.x the minimum entry into the product
 - celebrate that .NET 6.0 projects _can_ reference .NET Framework 4.6.1 projects without warning(s)
 - minimize the use of the `Microsoft.AspNetCore.Mvc` namespace
+- review the importance of why [Azure Durable Functions](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp) exists
 - consider that effective usage of [Azure Durable Functions](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp) requires some understanding of [the event-sourcing design pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) and how it applies to how Azure Functions _replays_ functions for scalability
 - verify the assertion that using `Task.WhenAll` in an Orchestration is an anti-pattern
 - verify the assertion that Durable Entities can be the replacement for some temporary-table-based designs in SQL server
@@ -53,31 +54,59 @@ return new HttpResponseMessage(HttpStatusCode.BadRequest)
 
 Minimizing the use of code dedicated to the ASP.NET MVC product reduces our responsibility to track compatibility changes with said product.
 
+## review the importance of why Azure Durable Functions exists
+
+Back in 2018, Microsoft’s Mark Heath takes the time to explain why we need Azure Durable Functions in “[10 Reasons to Use Durable Functions](https://markheath.net/post/10-reasons-durable-functions).” What I am seeing in this article is the following:
+
+The reasons to use Azure Durable Functions are largely logistical and operational. Stateless Azure Functions can technically do almost everything that Azure Durable Functions can do as long as you do _not_ want to:
+
+- run Functions in parallel and consolidating the output of these Functions ([fan-out/fan-in](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-cloud-backup?tabs=csharp))
+- formally define and monitor a workflow of named, long-running steps (the _Orchestration_ concept [📖 [docs](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-orchestrations?tabs=csharp)])
+- stop the Orchestration of Functions when it runs too long (`IDurableOrchestrationClient.TerminateAsync` [📖 [docs](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.webjobs.extensions.durabletask.idurableorchestrationclient.terminateasync?view=azure-dotnet#microsoft-azure-webjobs-extensions-durabletask-idurableorchestrationclient-terminateasync(system-string-system-string))])
+- formally define a hierarchy of workflows (the _Sub-Orchestration_ concept [📖 [docs](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-sub-orchestrations?tabs=csharp)])
+- share state among Functions from trigger input (`IDurableOrchestrationContext.GetInput<TInput>`)
+- trigger a function in an orchestration that can wait for an external event (`IDurableOrchestrationContext.WaitForExternalEvent`)
+
+The fan out, fan in scenario is one, leading technical argument for Azure Durable Functions. GitHub [issue #815](https://github.com/Azure/Azure-Functions/issues/815), “C# `Parallel.ForEach` not excuting in parallel,” betrays the technical price we pay for using a serverless solution:
+
+>This is basically expected behavior as the level of asynchrony you'll get will depend on the number of cores the machine has, and you can't control that when you're deployed to the consumption plan.
+>
+>The dynamic scale capabilities of Azure Functions will never take a single execution and transparently distribute that execution over multiple threads or machines. If you have a scenario where a large amount of work has to be done based on a single event then you should split your work up across multiple function executions so that the system can scale it out. One of the easiest ways to do this is with queues.
+>
+>—[Paul Batum](https://github.com/paulbatum), Microsoft
+
+Azure Durable Functions and plain-old Azure Functions both have retry policies, respectively, see:
+
+- “[Automatic retry on failure](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-error-handling?tabs=csharp#automatic-retry-on-failure)” (`IDurableOrchestrationContext.CallActivityWithRetryAsync`)
+- “[Retry policies (preview)](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-error-pages?tabs=csharp#retry-policies-preview)” (`FixedDelayRetry` or `ExponentialBackoffRetry` attributes)
+
 ## consider that effective usage of Azure Durable Functions requires some understanding of the event-sourcing design pattern and how it applies to how Azure Functions replays functions for scalability
 
 Whenever the Azure Functions runtime encounters an `async` call, it puts the running code to “sleep” and “wakes” it up when the `async` call completes, _replaying_ the code up to the last `async` call. The statement in the previous sentence can open up a world of hurt that can only be mitigated by designing for simplicity and studying [the event-sourcing design pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing).
 
-## verify the assertion that using `Task.WhenAll` in an Orchestration is an anti-pattern
+## verify the assertion that using `Task.WhenAll` over `IEnumerable<Task<T>>` in an Orchestration is an anti-pattern
 
 Empirical evidence informs us that the following Durable Orchestration may not complete:
 
 ```csharp
 [FunctionName(BadOrchestrationFunctionName)]
 public static async Task<List<string>> RunOrchestrator2(
-    [OrchestrationTrigger] IDurableOrchestrationContext context)
+    [OrchestrationTrigger] IDurableOrchestrationContext context, ILogger log)
 {
-    var cities = AzureHelloData.GetHelloCitiesAsync().GetAwaiter().GetResult(); // ⚠ this is not great 😒
+    log.LogInformation($"{nameof(context.IsReplaying)}: {context.IsReplaying}");
+    var cities = await context.CallActivityAsync<string[]>(ActivityFunction1Name, null);
 
-    var tasks = cities.Select(city => context.CallActivityAsync<string>(ActivityFunction2Name, city));
+    var tasks = cities.Select(city =>
+    {
+        log.LogInformation($"setting {city} task...");
+        var t = context.CallActivityAsync<string>(ActivityFunction2Name, city);
+        log.LogInformation($"returning {city} task...");
+        return t;
+    }); // to make this function behave correctly, add `.ToArray();`
+
     await Task.WhenAll(tasks);
 
     /*
-        Awaiting multiple tasks per function call in Azure Functions (AF) looks like an anti-pattern.
-
-        AF might prefer to await singly per function call (AF only supports one task per sleep step of replay behavior?).
-
-        Trying to yield multiple tasks from an async lamba function, looks like an approach that should be avoided.
-
         ⚠ Reminder: close Visual Studio and delete under `%LocalAppData%\Temp\Azurite` to remove orchestrations that do not complete ♻
     */
 
@@ -86,6 +115,8 @@ public static async Task<List<string>> RunOrchestrator2(
     return outputs;
 }
 ```
+
+Very similar to ensuring the execution of SQL commands in Entity Framework, calling `.ToArray()` (or `.ToList()`) on `IEnumerable<Task<T>>` ensures that all Tasks complete.
 
 The following (based on sample code from Microsoft) is the more reliable equivalent of the above:
 
