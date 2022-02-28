@@ -9,7 +9,7 @@ The recommendations for Q1 2022 are:
 - minimize the use of the `Microsoft.AspNetCore.Mvc` namespace
 - review the importance of why [Azure Durable Functions](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp) exists
 - consider that effective usage of [Azure Durable Functions](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp) requires some understanding of [the event-sourcing design pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) and how it applies to how Azure Functions _replays_ functions for scalability
-- verify the assertion that using `Task.WhenAll` in an Orchestration is an anti-pattern
+- verify the assertion that using `Task.WhenAll` over `IEnumerable<Task<T>>` in an Orchestration is an anti-pattern
 - verify the assertion that Durable Entities can be the replacement for some temporary-table-based designs in SQL server
 - consider the possibility that ‘advanced usage’ of Durable Entities (beyond temporary-table designs) requires an understanding of the [Actor Model](https://en.wikipedia.org/wiki/Actor_model) in general and Microsoft’s [Orleans](https://dotnet.github.io/orleans/) product in particular
 
