@@ -17,6 +17,8 @@ The recommendations for Q1 2022 are:
 
 Microsoft is asserting that, for mature, C#-based designs, .NET 6.0 is [a prerequisite](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-csharp?tabs=in-process#configure-your-environment). Requiring Azure Durable Functions, means Azure Functions must run In-Process (instead of an [Isolated Process](https://docs.microsoft.com/en-us/azure/azure-functions/dotnet-isolated-process-guide#differences-with-net-class-library-functions)). BTW: the only notable advantage that Out-of-process has is related to [the middleware pattern](https://www.iamdivakarkumar.com/azurefunctions-middleware/).
 
+To refuse to follow Microsoft’s preference for .NET 6 effectively means that Azure Functions will be confined to the .NET Core 3.0 time-frame, threatening developers with various inconveniences around tooling. In my Studio, the move to .NET 5.0 made using Azure Functions somewhat impossible. Now that we have a .NET 6.0 world, its backwards compatibility improvements reopens the way back to Azure Functions.
+
 ## celebrate that .NET 6.0 projects _can_ reference .NET Framework 4.6.1 projects without warning(s)
 
 A few basic experiments show that .NET 6.0 projects _can_ reference .NET Framework 4.6.1 projects without warning(s). This implies that there is no driving need to upgrade ‘legacy code’ (in the 4.6.1 .NET Framework time-frame) not aware of the existence of Azure Functions.
