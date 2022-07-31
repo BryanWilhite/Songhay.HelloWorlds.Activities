@@ -13,7 +13,7 @@ namespace Songhay.HelloWorlds.Functions.Tests
     {
         public StatelessFunctionsTests(ITestOutputHelper helper)
         {
-            this._testOutputHelper = helper;
+            _testOutputHelper = helper;
         }
 
         [Theory]
@@ -21,11 +21,11 @@ namespace Songhay.HelloWorlds.Functions.Tests
         public async Task ActivityTrigger_Test(string path, string args)
         {
             // arrange
-            var uri = new Uri($"{LOCAL}{path}", UriKind.Absolute);
+            var uri = new Uri($"{Local}{path}", UriKind.Absolute);
             var message = new HttpRequestMessage(HttpMethod.Post, uri);
 
             //act
-            this._testOutputHelper.WriteLine($"{nameof(uri)}: {uri.OriginalString}");
+            _testOutputHelper.WriteLine($"{nameof(uri)}: {uri.OriginalString}");
             var jO = JObject.FromObject(new {args});
             var response = await message.SendBodyAsync(jO.ToString());
 
@@ -38,18 +38,18 @@ namespace Songhay.HelloWorlds.Functions.Tests
         public async Task HttpTrigger_Test(string path)
         {
             // arrange
-            var uri = new Uri($"{LOCAL}{path}", UriKind.Absolute);
+            var uri = new Uri($"{Local}{path}", UriKind.Absolute);
             var message = new HttpRequestMessage(HttpMethod.Get, uri);
 
             //act
-            this._testOutputHelper.WriteLine($"{nameof(uri)}: {uri.OriginalString}");
+            _testOutputHelper.WriteLine($"{nameof(uri)}: {uri.OriginalString}");
             var response = await message.SendAsync();
 
             // assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        const string LOCAL = "http://localhost:7071/api";
+        const string Local = "http://localhost:7071/api";
 
         readonly ITestOutputHelper _testOutputHelper;
     }

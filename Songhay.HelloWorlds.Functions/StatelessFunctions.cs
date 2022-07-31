@@ -1,18 +1,3 @@
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Songhay.Diagnostics;
-using Songhay.Extensions;
-using Songhay.HelloWorlds.Activities;
-using Songhay.Models;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace Songhay.HelloWorlds.Functions
@@ -22,14 +7,14 @@ namespace Songhay.HelloWorlds.Functions
         static StatelessFunctions()
         {
             TraceSources.ConfiguredTraceSourceName = $"trace-{nameof(StatelessFunctions)}";
-            traceSource = TraceSources
+            TraceSource = TraceSources
                .Instance
                .GetConfiguredTraceSource()
                .WithSourceLevels()
-               .EnsureTraceSource();
+               .ToReferenceTypeValueOrThrow();
         }
 
-        static readonly TraceSource traceSource;
+        static readonly TraceSource TraceSource;
 
         [FunctionName(FuncNameHttpTrigger)]
         public static async Task<HttpResponseMessage> Run(
@@ -96,7 +81,7 @@ namespace Songhay.HelloWorlds.Functions
             if (getter.Args.IsHelpRequest()) log?.LogInformation(activity.DisplayHelp(getter.Args));
             else
             {
-                var activityLog = activity.StartActivity(getter.Args, traceSource);
+                var activityLog = activity.StartActivity(getter.Args, TraceSource);
                 log?.LogInformation(activityLog);
             }
 

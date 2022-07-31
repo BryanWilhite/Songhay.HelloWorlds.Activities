@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Authors>Bryan D. Wilhite</Authors>
     <Company>Songhay System</Company>
     <Description>This is a simple demonstration of the Songhay System Shell Activities architecture.</Description>
@@ -10,6 +10,8 @@
     <RepositoryUrl>https://github.com/BryanWilhite/Songhay.HelloWorlds.Activities</RepositoryUrl>
     <AssemblyVersion>2022.2.21</AssemblyVersion>
     <Deterministic>False</Deterministic>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,11 +19,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SonghayCore" Version="5.2.1" />
+    <PackageReference Include="SonghayCore" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Songhay.HelloWorlds.Activities\Songhay.HelloWorlds.Activities.csproj" />
+    <ProjectReference Include="..\Songhay.HelloWorlds\Songhay.HelloWorlds.csproj" />
   </ItemGroup>
 
   <ItemGroup>
