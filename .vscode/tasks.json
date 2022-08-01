@@ -143,7 +143,10 @@
             "type": "func",
             "command": "host start",
             "problemMatcher": "$func-powershell-watch",
-            "isBackground": true
+            "isBackground": true,
+            "options": {
+                "cwd": "${workspaceFolder}/Songhay.HelloWorlds.IO.Functions"
+            }
         }
     ]
 }
