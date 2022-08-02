@@ -1,8 +1,9 @@
 {
-    "cSpell.enabled": true,
-    "azureFunctions.deploySubpath": "Songhay.HelloWorlds.Functions/bin/Release/net6.0/publish",
-    "azureFunctions.projectLanguage": "C#",
-    "azureFunctions.projectRuntime": "~4",
-    "debug.internalConsoleOptions": "neverOpen",
-    "azureFunctions.preDeployTask": "publish"
+  "azureFunctions.deploySubpath": "Songhay.HelloWorlds.Functions/bin/Release/net6.0/publish",
+  "azureFunctions.preDeployTask": "publish",
+  "azureFunctions.projectLanguage": "C#",
+  "azureFunctions.projectRuntime": "~4",
+  "azureFunctions.projectSubpath": "Songhay.HelloWorlds.Functions",
+  "cSpell.enabled": true,
+  "debug.internalConsoleOptions": "neverOpen"
 }
