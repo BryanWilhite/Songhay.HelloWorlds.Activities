@@ -8,7 +8,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.7.2" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SonghayCore" Version="6.0.1" />
     <PackageReference Include="SonghayCore.Newtonsoft" Version="6.0.0" />
   </ItemGroup>
