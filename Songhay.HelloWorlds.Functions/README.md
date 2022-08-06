@@ -53,7 +53,7 @@ However, modern ASP.NET will no longer tolerate this return value:
 return request.CreateResponse(HttpStatusCode.OK);
 ```
 
-Calling `CreateResponse` will produce an error like `Synchronous operations are disallowed. Call WriteAsync or set AllowSynchronousIO to true instead.` [📖 [docs](https://docs.microsoft.com/en-us/dotnet/core/compatibility/aspnetcore#change-description)].
+Calling `CreateResponse` will produce an error like `Synchronous operations are disallowed. Call WriteAsync or set AllowSynchronousIO to true instead.` [📖 [docs](https://docs.microsoft.com/en-us/dotnet/core/compatibility/aspnetcore#change-description)][🐙🐈 issue #[7064](https://github.com/Azure/azure-functions-host/issues/7064)].
 
 Minimizing the use of code dedicated to the ASP.NET MVC product reduces our responsibility to track compatibility changes with said product.
 
