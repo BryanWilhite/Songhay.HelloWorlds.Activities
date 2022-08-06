@@ -140,43 +140,5 @@
             "isBackground": true,
             "problemMatcher": "$func-watch"
         },
-        {
-            "label": "Azure Functions [start Songhay.HelloWorlds.IO.Functions]",
-            "type": "func",
-            "command": "host start",
-            "problemMatcher": "$func-powershell-watch",
-            "isBackground": true,
-            "options": {
-                "cwd": "${workspaceFolder}/Songhay.HelloWorlds.IO.Functions"
-            }
-        },
-        {
-            "label": "PowerShell: Set-VSCode-AzFuncSettings [C#]",
-            "type": "shell",
-            "command": "powershell",
-            "args": [
-                "-ExecutionPolicy",
-                "RemoteSigned",
-                "-NoProfile",
-                "-File",
-                "${workspaceFolder}/Songhay.HelloWorlds.Functions.Tests/ps1/Set-VSCode-AzFuncSettings.ps1",
-                "C#"
-            ],
-            "problemMatcher": []
-        },
-        {
-            "label": "PowerShell: Set-VSCode-AzFuncSettings [PowerShell]",
-            "type": "shell",
-            "command": "powershell",
-            "args": [
-                "-ExecutionPolicy",
-                "RemoteSigned",
-                "-NoProfile",
-                "-File",
-                "${workspaceFolder}/Songhay.HelloWorlds.Functions.Tests/ps1/Set-VSCode-AzFuncSettings.ps1",
-                "PowerShell"
-            ],
-            "problemMatcher": []
-        },
     ]
 }
