@@ -1,27 +1,22 @@
-# Azure Functions (Q1 2022)
+# Azure Functions (Q4 2022)
 
-## recommendations
+Here is the current view of the serverless cloud technology of this Studio: Azure Functions. The leading update here is the full acceptance of .NET 6.0. This is the state of the art and is no longer a recommendation. Starting with the “recommendations for the enterprise” section below, the notes here try to deep-dive into Azure Functions details. A more introductory overview can be seen in [my notes](https://github.com/BryanWilhite/dotnet-core/tree/master/dotnet-azure-functions-quickstart#azure-functions-quickstart) for the Azure Functions sample in my self-educational `dotnet-core` repo. This introductory overview makes Azure Functions Core Tools [[GitHub](https://github.com/Azure/azure-functions-core-tools)] and Azurite [[GitHub](https://github.com/azure/azurite#npm)] so familiar that the expectation here is that we will run `Songhay.HelloWorlds.Functions` locally from Visual Studio Code in the following cycle:
 
-The recommendations for Q1 2022 are:
+- run **Azurite: Start** inside Visual Studio Code
+- run and debug **Attach to .NET Functions** (defined in the conventional `launch.json` [file](https://github.com/BryanWilhite/Songhay.HelloWorlds.Activities/blob/master/.vscode/launch.json#L32)) inside Visual Studio Code
+- call the local endpoints with, say, [Thunder Client](https://betterprogramming.pub/vs-code-awesome-tools-thunder-client-extension-for-you-apis-f2e6a3671c3b) inside Visual Studio Code
+- run **Azurite: Close** inside Visual Studio Code
 
-- consider .NET 6.0 and Azure Functions 4.x the minimum entry into the product
-- celebrate that .NET 6.0 projects _can_ reference .NET Framework 4.6.1 projects without warning(s)
+## recommendations for the enterprise
+
+The current recommendations are:
+
 - minimize the use of the `Microsoft.AspNetCore.Mvc` namespace
 - review the importance of why [Azure Durable Functions](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp) exists
 - consider that effective usage of [Azure Durable Functions](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp) requires some understanding of [the event-sourcing design pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) and how it applies to how Azure Functions _replays_ functions for scalability
 - verify the assertion that using `Task.WhenAll` over `IEnumerable<Task<T>>` in an Orchestration is an anti-pattern
 - verify the assertion that Durable Entities can be the replacement for some temporary-table-based designs in SQL server
 - consider the possibility that ‘advanced usage’ of Durable Entities (beyond temporary-table designs) requires an understanding of the [Actor Model](https://en.wikipedia.org/wiki/Actor_model) in general and Microsoft’s [Orleans](https://dotnet.github.io/orleans/) product in particular
-
-## consider .NET 6.0 and Azure Functions 4.x the minimum entry into the product
-
-Microsoft is asserting that, for mature, C#-based designs, .NET 6.0 is [a prerequisite](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-csharp?tabs=in-process#configure-your-environment). Requiring Azure Durable Functions, means Azure Functions must run In-Process (instead of an [Isolated Process](https://docs.microsoft.com/en-us/azure/azure-functions/dotnet-isolated-process-guide#differences-with-net-class-library-functions)). BTW: the only notable advantage that Out-of-process has is related to [the middleware pattern](https://www.iamdivakarkumar.com/azurefunctions-middleware/).
-
-To refuse to follow Microsoft’s preference for .NET 6 effectively means that Azure Functions will be confined to the .NET Core 3.0 time-frame, threatening developers with various inconveniences around tooling. In my Studio, the move to .NET 5.0 made using Azure Functions somewhat impossible. Now that we have a .NET 6.0 world, its backwards compatibility improvements reopens the way back to Azure Functions.
-
-## celebrate that .NET 6.0 projects _can_ reference .NET Framework 4.6.1 projects without warning(s)
-
-A few basic experiments show that .NET 6.0 projects _can_ reference .NET Framework 4.6.1 projects without warning(s). This implies that there is no driving need to upgrade ‘legacy code’ (in the 4.6.1 .NET Framework time-frame) not aware of the existence of Azure Functions.
 
 ## minimize the use of the `Microsoft.AspNetCore.Mvc` namespace
 
@@ -31,18 +26,10 @@ The `Microsoft.AspNetCore.*` namespaces contain loads of convenience methods tha
 string name = req.Query["name"];
 ```
 
-Doing the same without `Microsoft.AspNetCore.*` namespaces (using `HttpRequestMessage`):
+Doing the same without `Microsoft.AspNetCore.*` namespaces (using `HttpUtility` [📖 [docs](https://docs.microsoft.com/en-us/dotnet/api/system.web.httputility?view=net-6.0)]):
 
 ```csharp
-if (!req.Options.TryGetValue(new HttpRequestOptionsKey<HttpContext>(nameof(HttpContext)), out var aspContext))
-{
-    return new BadRequestObjectResult("The expected HTTP context is not here.");
-}
-
-if (!aspContext.Request.Query.TryGetValue("instanceId", out var name))
-{
-    return new BadRequestObjectResult("The expected `name` is not here.");
-}
+var name = HttpUtility.ParseQueryString(request.RequestUri.Query).Get("name");
 ```
 
 Also, the use of `BadRequestObjectResult` (or `OkObjectResult`) can be replaced by this pattern:
@@ -54,6 +41,20 @@ return new HttpResponseMessage(HttpStatusCode.BadRequest)
 };
 ```
 
+or
+
+```csharp
+return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent($"Hello, {name}") };
+```
+
+However, modern ASP.NET will no longer tolerate this return value:
+
+```csharp
+return request.CreateResponse(HttpStatusCode.OK);
+```
+
+Calling `CreateResponse` will produce an error like `Synchronous operations are disallowed. Call WriteAsync or set AllowSynchronousIO to true instead.` [📖 [docs](https://docs.microsoft.com/en-us/dotnet/core/compatibility/aspnetcore#change-description)].
+
 Minimizing the use of code dedicated to the ASP.NET MVC product reduces our responsibility to track compatibility changes with said product.
 
 ## review the importance of why Azure Durable Functions exists
@@ -62,16 +63,16 @@ Back in 2018, Microsoft’s Mark Heath takes the time to explain why we need Azu
 
 The reasons to use Azure Durable Functions are largely logistical and operational. Stateless Azure Functions can technically do almost everything that Azure Durable Functions can do as long as you do _not_ want to:
 
-- run Functions in parallel and consolidating the output of these Functions ([fan-out/fan-in](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-cloud-backup?tabs=csharp))
+- run Functions in parallel in order to aggregate the output of these Functions ([fan-out/fan-in](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-cloud-backup?tabs=csharp))
 - formally define and monitor a workflow of named, long-running steps (the _Orchestration_ concept [📖 [docs](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-orchestrations?tabs=csharp)])
 - stop the Orchestration of Functions when it runs too long (`IDurableOrchestrationClient.TerminateAsync` [📖 [docs](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.webjobs.extensions.durabletask.idurableorchestrationclient.terminateasync?view=azure-dotnet#microsoft-azure-webjobs-extensions-durabletask-idurableorchestrationclient-terminateasync(system-string-system-string))])
 - formally define a hierarchy of workflows (the _Sub-Orchestration_ concept [📖 [docs](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-sub-orchestrations?tabs=csharp)])
 - share state among Functions from trigger input (`IDurableOrchestrationContext.GetInput<TInput>`)
 - trigger a function in an orchestration that can wait for an external event (`IDurableOrchestrationContext.WaitForExternalEvent`)
 
-The fan out, fan in scenario is one, leading technical argument for Azure Durable Functions. GitHub [issue #815](https://github.com/Azure/Azure-Functions/issues/815), “C# `Parallel.ForEach` not excuting in parallel,” betrays the technical price we pay for using a serverless solution:
+The fan out, fan in scenario is one, leading technical argument for Azure Durable Functions. GitHub [issue #815](https://github.com/Azure/Azure-Functions/issues/815), “C# `Parallel.ForEach` not executing in parallel,” betrays the technical price we pay for using a serverless solution:
 
->This is basically expected behavior as the level of asynchrony you'll get will depend on the number of cores the machine has, and you can't control that when you're deployed to the consumption plan.
+>This is basically expected behavior as the level of asynchrony you’ll get will depend on the number of cores the machine has, and you can't control that when you're deployed to the consumption plan.
 >
 >The dynamic scale capabilities of Azure Functions will never take a single execution and transparently distribute that execution over multiple threads or machines. If you have a scenario where a large amount of work has to be done based on a single event then you should split your work up across multiple function executions so that the system can scale it out. One of the easiest ways to do this is with queues.
 >

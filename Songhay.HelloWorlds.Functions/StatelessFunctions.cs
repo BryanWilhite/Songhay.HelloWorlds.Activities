@@ -39,12 +39,12 @@ public static class StatelessFunctions
         var name = HttpUtility.ParseQueryString(request.RequestUri.Query).Get("name");
 
         var requestBody = await request.Content.ReadAsStringAsync();
-        dynamic data = JsonConvert.DeserializeObject(requestBody);
+        dynamic? data = JsonConvert.DeserializeObject(requestBody);
         name ??= data?.name;
 
         return name != null
-            ? request.CreateResponse(HttpStatusCode.OK, $"Hello, {name}")
-            : request.CreateErrorResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body");
+            ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent($"Hello, {name}") }
+            : new HttpResponseMessage(HttpStatusCode.BadRequest) { ReasonPhrase = "Please pass a name on the query string or in the request body." };
     }
 
     [FunctionName(FuncNameActivityTrigger)]
@@ -66,8 +66,10 @@ public static class StatelessFunctions
 
         var args = jO.GetValue<string>("args", throwException: false).Split(" ");
         if (!args.Any())
-            return request.CreateResponse(HttpStatusCode.BadRequest,
-                $"{FuncNameActivityTrigger}: The expected Activity args are not here.");
+            return new HttpResponseMessage(HttpStatusCode.BadRequest)
+            {
+                ReasonPhrase = $"{FuncNameActivityTrigger}: The expected Activity args are not here."
+            };
 
         var getter = new MyActivitiesGetter(args);
         var activity = getter.GetActivity();
@@ -75,7 +77,7 @@ public static class StatelessFunctions
         if (activity == null)
         {
             log?.LogError($"{FuncNameActivityTrigger}: the expected Activity is not here [{nameof(args)}: {string.Join(",", args)}].");
-            return request.CreateResponse(HttpStatusCode.NotFound);
+            return new HttpResponseMessage(HttpStatusCode.NotFound);
         }
 
         if (getter.Args.IsHelpRequest()) log?.LogInformation(activity.DisplayHelp(getter.Args));
@@ -85,7 +87,7 @@ public static class StatelessFunctions
             log?.LogInformation(activityLog);
         }
 
-        return request.CreateResponse(HttpStatusCode.OK);
+        return new HttpResponseMessage(HttpStatusCode.OK);
     }
 
     const string Get = nameof(HttpMethod.Get);
