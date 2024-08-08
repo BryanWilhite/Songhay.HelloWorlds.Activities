@@ -1,7 +1,4 @@
-﻿using Songhay.Diagnostics;
-using Songhay.Extensions;
-using Songhay.Models;
-using System.Diagnostics;
+﻿using Songhay.HelloWorlds.Activities;
 using System.Reflection;
 
 namespace Songhay.HelloWorlds.Shell;
@@ -13,29 +10,12 @@ static class Program
         Console.Write(ProgramAssemblyUtility.GetAssemblyInfo(Assembly.GetExecutingAssembly(), true));
         Console.WriteLine(string.Empty);
         Console.WriteLine("Activities Assembly:");
-        Console.Write(ProgramAssemblyUtility.GetAssemblyInfo(typeof(MyActivitiesGetter).Assembly, true));
+        Console.Write(ProgramAssemblyUtility.GetAssemblyInfo(typeof(TopTenActivity).Assembly, true));
     }
 
     static void Main(string[] args)
     {
         DisplayCredits();
-        var configuration = ProgramUtility.LoadConfiguration(Directory.GetCurrentDirectory());
-        TraceSources.ConfiguredTraceSourceName = configuration[DeploymentEnvironment.DefaultTraceSourceNameConfigurationKey];
-
-        using (var listener = new TextWriterTraceListener(Console.Out))
-        {
-            ProgramUtility.InitializeTraceSource(listener);
-
-            var getter = new MyActivitiesGetter(args);
-            var activity = getter.GetActivity().ToReferenceTypeValueOrThrow();
-
-            if (getter.Args.IsHelpRequest())
-                Console.WriteLine(activity.DisplayHelp(getter.Args));
-            else
-                activity.Start(getter.Args);
-
-            listener.Flush();
-        }
 
 #if DEBUG
         Console.WriteLine($"{Environment.NewLine}Press any key to continue...");
