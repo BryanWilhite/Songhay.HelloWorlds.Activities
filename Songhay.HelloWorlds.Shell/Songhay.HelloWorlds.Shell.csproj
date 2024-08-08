@@ -1,35 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <Authors>Bryan D. Wilhite</Authors>
-    <Company>Songhay System</Company>
-    <Description>This is a simple demonstration of the Songhay System Shell Activities architecture.</Description>
-    <Copyright>(c) 2022 Bryan D. Wilhite</Copyright>
-    <RepositoryUrl>https://github.com/BryanWilhite/Songhay.HelloWorlds.Activities</RepositoryUrl>
-    <AssemblyVersion>2022.2.21</AssemblyVersion>
-    <Deterministic>False</Deterministic>
-    <Nullable>enable</Nullable>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;1705;CS7035</NoWarn>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="SonghayCore" Version="6.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Songhay.HelloWorlds\Songhay.HelloWorlds.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 
 </Project>
