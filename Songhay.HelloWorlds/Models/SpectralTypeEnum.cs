@@ -1,3 +1,5 @@
+namespace Songhay.HelloWorlds.Models;
+
 /// <summary>
 /// Enumerates spectral types
 /// </summary>
