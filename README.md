@@ -1,6 +1,12 @@
 # Songhay System Activities example
 
-This is a simple demonstration of the Songhay System Activities ‘tiny’ architecture, running in the shell and in a serverless context.
+This is a simple demonstration of my study of the Songhay Activity. The `Activity` in this Studio is designed to be packaged as:
+
+- a Generic Host [📖 [docs](https://learn.microsoft.com/en-us/dotnet/core/extensions/timer-service?pivots=dotnet-7-0)] executable 🐚
+- a PowerShell Binary Module [📖 [docs](https://learn.microsoft.com/en-us/powershell/scripting/developer/module/how-to-write-a-powershell-binary-module?view=powershell-7.4) ⚙🐚
+- tooling for the dotnet CLI ⚙🐚
+
+The PowerShell Binary Module fits in with the current Studio interest in using PowerShell-based Azure Functions.
 
 Songhay System Activities is part of the `SonghayCore` [repo](https://github.com/BryanWilhite/SonghayCore). It is intended to encapsulate and decouple “business logic” running in:
 
